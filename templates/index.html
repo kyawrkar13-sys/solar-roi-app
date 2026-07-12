@@ -1,3 +1,4 @@
+[12/07/2026 16:20] Rkar Kyaw: import os
 from flask import Flask, render_template, request, jsonify
 
 app = Flask(__name__)
@@ -452,6 +453,252 @@ data:cash
 
 }
 
+
+</script>
+
+
+</body>
+</html>
+[12/07/2026 17:40] Rkar Kyaw: <!DOCTYPE html>
+<html>
+<head>
+<title>Solar Engineering Analyzer</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background:#0b1724;
+    color:white;
+    margin:0;
+}
+
+.container{
+    max-width:1000px;
+    margin:auto;
+    padding:20px;
+}
+
+h1{
+    text-align:center;
+    color:#00d9ff;
+}
+
+.card{
+    background:#162b3a;
+    padding:20px;
+    margin:20px 0;
+    border-radius:15px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:15px;
+}
+
+input{
+    width:100%;
+    padding:10px;
+    margin-top:5px;
+    border-radius:8px;
+    border:0;
+}
+
+button{
+    width:100%;
+    padding:15px;
+    margin-top:20px;
+    background:#00d9ff;
+    border:0;
+    border-radius:10px;
+    font-size:18px;
+    cursor:pointer;
+}
+
+.result{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:15px;
+}
+
+.box{
+    background:#203b50;
+    padding:15px;
+    border-radius:10px;
+    text-align:center;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>⚡ Solar Engineering Analyzer</h1>
+
+<div class="card">
+
+<h2>System Input</h2>
+
+<div class="grid">
+
+<div>
+PV Size (kW)
+<input id="pv_kw" value="10">
+</div>
+
+<div>
+Peak Sun Hour
+<input id="psh" value="4.5">
+</div>
+
+<div>
+Performance Ratio %
+<input id="pr" value="80">
+</div>
+
+<div>
+Monthly Load kWh
+<input id="load" value="1000">
+</div>
+
+<div>
+Battery kWh
+<input id="battery" value="20">
+</div>
+
+<div>
+Battery DoD %
+<input id="dod" value="90">
+</div>
+
+<div>
+Efficiency %
+<input id="efficiency" value="90">
+</div>
+
+<div>
+Tariff MMK/kWh
+<input id="tariff" value="300">
+</div>
+
+<div>
+CAPEX MMK
+<input id="capex" value="15000000">
+</div>
+
+<div>
+O&M / Year
+<input id="om" value="100000">
+</div>
+
+<div>
+Project Life
+<input id="life" value="25">
+</div>
+
+<div>
+Discount %
+<input id="discount" value="8">
+</div>
+
+</div>
+
+
+<button onclick="calculate()">
+RUN ENGINEERING ANALYSIS
+</button>
+
+</div>
+
+
+<div class="card">
+
+<h2>Result</h2>
+
+<div class="result">
+
+<div class="box">
+PV Generation
+<h3 id="pv">-</h3>
+</div>
+
+<div class="box">
+Battery Backup
+<h3 id="backup">-</h3>
+</div>
+
+<div class="box">
+Payback
+<h3 id="payback">-</h3>
+</div>
+
+<div class="box">
+ROI
+<h3 id="roi">-</h3>
+</div>
+
+<div class="box">
+NPV
+<h3 id="npv">-</h3>
+</div>
+
+</div>
+
+</div>
+
+
+</div>
+
+
+<script>
+
+function calculate(){
+
+fetch("/calculate",
+{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+
+pv_kw:pv_kw.value,
+psh:psh.value,
+pr:pr.value,
+load:load.value,
+battery:battery.value,
+dod:dod.value,
+efficiency:efficiency.value,
+tariff:tariff.value,
+capex:capex.value,
+om:om.value,
+life:life.value,
+discount:discount.value
+
+})
+
+})
+
+.then(res=>res.json())
+
+.then(data=>{
+
+pv.innerHTML=data.pv_generation+" kWh/year";
+
+backup.innerHTML=data.battery.backup_hours+" hours";
+
+payback.innerHTML=data.finance.payback+" years";
+
+roi.innerHTML=data.finance.roi+" %";
+
+npv.innerHTML=data.finance.npv+" MMK";
+
+});
+
+}
 
 </script>
 
