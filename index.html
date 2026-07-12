@@ -1,0 +1,21 @@
+<!doctype html><html lang="my"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Solar Engineering ROI</title><script src="https://cdn.jsdelivr.net/npm/chart.js"></script><link rel="stylesheet" href="/static/style.css"></head>
+<body><div class="wrap"><h1>⚡ Solar Engineering ROI Calculator</h1><p class="sub">Tariff tiers + degradation + O&M + tariff escalation + discount rate</p>
+<div class="grid"><aside class="panel"><h2>Engineering Inputs</h2>
+<label>Monthly consumption (kWh)<input id="monthly_kwh" type="number" value="150"></label>
+<label>Solar energy coverage (%)<input id="solar_coverage" type="number" value="70"></label>
+<label>Installed CAPEX (MMK)<input id="capex" type="number" value="8000000"></label>
+<label>Annual degradation (%)<input id="degradation" type="number" step=".1" value="0.5"></label>
+<label>Tariff escalation / year (%)<input id="tariff_escalation" type="number" step=".1" value="0"></label>
+<label>Annual O&M (MMK)<input id="annual_om" type="number" value="0"></label>
+<label>Project life (years)<input id="project_life" type="number" value="20"></label>
+<label>Discount rate (%)<input id="discount_rate" type="number" step=".1" value="0"></label>
+<button onclick="calc()">Recalculate</button>
+<div class="note">Solar coverage = monthly solar energy used on-site ÷ monthly load. This is an energy model, not a PV system-sizing model.</div></aside>
+<main><div class="cards">
+<div class="card"><span>Current monthly bill</span><b id="bill"></b></div><div class="card"><span>Year-1 monthly saving</span><b id="ms"></b></div>
+<div class="card"><span>Simple payback</span><b id="pb"></b></div><div class="card"><span>NPV</span><b id="npv"></b></div></div>
+<section><h2>Cash Flow / Net Position</h2><canvas id="chart"></canvas></section>
+<section><h2>Tariff Breakdown</h2><div id="tiers"></div></section>
+<section><h2>Model assumptions</h2><p>Domestic tariff is applied progressively to grid-import kWh. Solar reduces grid import first; the remaining grid kWh is billed again through the tariff tiers. Annual degradation reduces solar output. O&M is deducted yearly. Tariff escalation and discount rate are user-controlled assumptions.</p></section>
+</main></div></div><script src="/static/app.js"></script></body></html>
