@@ -8,9 +8,14 @@ def solar_generation(pv_kw, psh, pr):
     return pv_kw * psh * 365 * pr
 
 
-def battery_calculation(capacity, dod, efficiency, load):
+def battery_calculation(capacity, dod, efficiency, monthly_load):
     usable = capacity * dod * efficiency
-    backup = usable / load if load > 0 else 0
+    coverage = (usable / monthly_load) * 100 if monthly_load > 0 else 0
+
+    return {
+        "usable_energy": round(usable,2),
+        "monthly_coverage": round(coverage,2)
+    }
 
     return {
         "usable_energy": round(usable,2),
