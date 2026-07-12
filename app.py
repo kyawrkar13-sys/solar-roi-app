@@ -1,10 +1,11 @@
+Python import os
 from flask import Flask,render_template,request,jsonify
 app=Flask(__name__)
 TARIFF=[(50,50),(50,100),(100,150),(float("inf"),300)]
 def bill(kwh):
     r=max(0,float(kwh)); total=0; rows=[]
     for cap,rate in TARIFF:
-        use=min(r,cap); cost=use*rate
+        use=min(r,cap); cost=use*
         if use>0: rows.append({"kwh":round(use,2),"rate":rate,"cost":round(cost,2)})
         total+=cost;r-=use
         if r<=0: break
