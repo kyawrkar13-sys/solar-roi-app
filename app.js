@@ -1,4 +1,4 @@
-let ch;const ids=["monthly_kwh","solar_coverage","capex","degradation","tariff_escalation","annual_om","project_life","discount_rate"];
+let ch;const ids=["monthly_kwh","solar_coverage","capex","degradation","tariff_escalation","annual_om","project_life",];
 const fmt=n=>Math.round(n).toLocaleString();
 async function calc(){let d={};ids.forEach(x=>d[x]=document.getElementById(x).value);
 let r=await fetch("/calculate",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(d)}),j=await r.json();
