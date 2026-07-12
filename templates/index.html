@@ -227,7 +227,9 @@ discount:discount.value
 
 pv.innerHTML=data.pv_generation+" kWh/year";
 
-backup.innerHTML=data.battery.backup_hours+" hours";
+backup.innerHTML =
+"Available: " + data.battery.usable_energy + " kWh<br>" +
+"Coverage: " + data.battery.monthly_coverage + " %";
 
 payback.innerHTML=data.finance.payback+" years";
 
