@@ -23,31 +23,30 @@ def financial_model(capex, annual_saving, om, life):
     cashflow = []
     cumulative = -capex
     npv = -capex
-    payback = None
     total = 0
+    payback = None
 
-    discount = 0.08   # default 8% discount (မထည့်လည်းရ)
+    discount = 0.08
 
-    for y in range(1, life + 1):
+    for year in range(1, life + 1):
 
-        net = annual_saving * ((1.03) ** (y-1)) - om
+        net = annual_saving * (1.03 ** (year - 1)) - om
 
         cumulative += net
-        npv += net / ((1 + discount) ** y)
-
+        npv += net / ((1 + discount) ** year)
         total += net
 
         if payback is None and cumulative >= 0:
-            payback = y
+            payback = year
 
         cashflow.append({
-            "year": y,
+            "year": year,
             "cash": round(net, 2),
             "cumulative": round(cumulative, 2)
         })
 
 
-    roi = ((total - capex) / capex) * 100
+    roi = ((total - capex) / capex) * 100 if capex else 0
 
     return {
         "payback": payback,
@@ -64,52 +63,53 @@ def index():
 
 
 
-@app.post("/calculate")
+@app.route("/calculate", methods=["POST"])
 def calculate():
 
-    d = request.get_json()
+    try:
+        d = request.get_json()
+
+        pv_kw = float(d.get("pv_kw", 0))
+        psh = float(d.get("psh", 0))
+        pr = float(d.get("pr", 0)) / 100
+
+        pv_year = solar_generation(
+            pv_kw,
+            psh,
+            pr
+        )
 
 
-    pv_kw = float(d["pv_kw"])
-    psh = float(d["psh"])
-    pr = float(d["pr"]) / 100
+        battery = battery_calculation(
+            float(d.get("battery", 0)),
+            float(d.get("dod", 0)) / 100,
+            float(d.get("efficiency", 0)) / 100,
+            float(d.get("load", 0))
+        )
 
 
-    pv_year = solar_generation(
-        pv_kw,
-        psh,
-        pr
-    )
+        annual_saving = pv_year * float(d.get("tariff", 0))
 
 
-    battery = battery_calculation(
-        float(d["battery"]),
-        float(d["dod"]) / 100,
-        float(d["efficiency"]) / 100,
-        float(d["load"])
-    )
+        finance = financial_model(
+            float(d.get("capex", 0)),
+            annual_saving,
+            float(d.get("om", 0)),
+            int(d.get("life", 1))
+        )
 
 
-    annual_saving = pv_year * float(d["tariff"])
+        return jsonify({
+            "pv_generation": round(pv_year, 2),
+            "battery": battery,
+            "finance": finance
+        })
 
 
-    finance = financial_model(
-        float(d["capex"]),
-        annual_saving,
-        float(d["om"]),
-        int(d["life"])
-    )
-
-
-    return jsonify({
-
-        "pv_generation": round(pv_year, 2),
-
-        "battery": battery,
-
-        "finance": finance
-
-    })
+    except Exception as e:
+        return jsonify({
+            "error": str(e)
+        }), 500
 
 
 
