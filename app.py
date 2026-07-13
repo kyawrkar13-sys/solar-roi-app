@@ -4,17 +4,12 @@ from flask import Flask, render_template, request, jsonify
 app = Flask(__name__)
 
 
-# =========================
-# SOLAR GENERATION
-# =========================
+
 
 def solar_generation(pv_kw, psh, pr):
     return pv_kw * psh * 365 * pr
 
 
-# =========================
-# BATTERY CALCULATION
-# =========================
 
 def battery_calculation(capacity, dod, efficiency, load):
 
@@ -30,7 +25,7 @@ def battery_calculation(capacity, dod, efficiency, load):
 
 # =========================
 # GENERATOR FUEL SAVING
-# =========================
+# =======================
 
 def generator_calculation(
     fuel_consumption,
@@ -103,7 +98,7 @@ def generator_calculation(
 
 # =========================
 # FINANCIAL CALCULATION
-# =========================
+# =======================
 
 def finance(
     capex,
@@ -134,7 +129,6 @@ def finance(
 
 
     for y in range(1, life + 1):
-
         # 3% yearly energy price escalation
         annual_saving = (
             total_annual_saving *
@@ -261,20 +255,13 @@ def calculate():
         )
 
 
-        # -------------------------
-        # SOLAR GENERATION
-        # -------------------------
-
-        pv = solar_generation(
-            pv_kw,
+pv = solar_generation 
+(pv_kw,
             psh,
             pr
         )
 
 
-        # -------------------------
-        # BATTERY
-        # -------------------------
 
         battery = battery_calculation(
 
@@ -289,9 +276,7 @@ def calculate():
         )
 
 
-        # -------------------------
-        # SOLAR ELECTRICITY SAVING
-        # -------------------------
+
 
         tariff = float(
             d["tariff"]
@@ -304,9 +289,6 @@ def calculate():
         )
 
 
-        # -------------------------
-        # GENERATOR INPUT
-        # -------------------------
 
         fuel_consumption = float(
             d.get(
@@ -364,9 +346,7 @@ def calculate():
         )
 
 
-        # -------------------------
-        # FINANCIAL ANALYSIS
-        # -------------------------
+    
 
         result = finance(
 
@@ -414,9 +394,6 @@ def calculate():
         }), 500
 
 
-# =========================
-# RUN SERVER
-# =========================
 
 if name == "__main__":
 
