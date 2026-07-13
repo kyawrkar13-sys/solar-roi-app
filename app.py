@@ -2,7 +2,6 @@ from flask import Flask, request, render_template_string
 
 app = Flask(__name__)
 
-# HTML ကို သီးသန့် template တစ်ခုအနေနဲ့ သတ်မှတ်လိုက်ပါတယ်
 HTML_TEMPLATE = """
 <!DOCTYPE html>
 <html>
@@ -48,14 +47,12 @@ HTML_TEMPLATE = """
 def home():
     if request.method == "POST":
         try:
-            # Input တွေကို ရယူခြင်း
             fuel = float(request.form["fuel"])
             hours = float(request.form["hours"])
             price = float(request.form["price"])
             offset = float(request.form["offset"])
             cost = float(request.form["cost"])
 
-            # တွက်ချက်ခြင်း
             fuel_day = fuel * hours * (offset / 100)
             saving_day = fuel_day * price
             saving_month = saving_day * 30
@@ -64,7 +61,6 @@ def home():
             payback = cost / saving_year if saving_year > 0 else 0
             roi = (saving_year / cost) * 100 if cost > 0 else 0
 
-            # Result string ဖန်တီးခြင်း
             result_text = f"""
             <strong>Results:</strong><br>
             Fuel Saving: {fuel_day:.2f} L/day<br>
@@ -76,10 +72,10 @@ def home():
             """
             return render_template_string(HTML_TEMPLATE, result=result_text, fuel=fuel, hours=hours, price=price, offset=offset, cost=cost)
         
-        except Exception:
-            return render_template_string(HTML_TEMPLATE, error="Invalid input. ကျေးဇူးပြု၍ ဂဏန်းများသာ ထည့်ပေးပါ။")
+        except:
+            return render_template_string(HTML_TEMPLATE, error="Invalid input. ဂဏန်းများသာ ထည့်ပေးပါ။")
 
     return render_template_string(HTML_TEMPLATE)
 
-if__name__ == "__main__"
-    app.run(host="0.0.0.0", port=5000, debug=True)
+if name == "__main__":
+    app.run(host="0.0.0.0", port=5000)
