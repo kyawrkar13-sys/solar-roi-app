@@ -1,245 +1,379 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Solar ROI & NPV Analyzer</title>
-<link rel="icon" type="image/png" href="/static/icon.png?v=2">
-<link rel="apple-touch-icon" href="/static/icon.png">
-<link rel="manifest" href="/static/manifest.json">
-<head>
+
+<title>Solar ROI Analyzer</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
 <style>
 
+*{
+box-sizing:border-box;
+}
+
 body{
-    font-family: Arial, sans-serif;
-    background:#0b1724;
-    color:white;
-    margin:0;
+margin:0;
+font-family:Arial,"Noto Sans Myanmar",sans-serif;
+background:#08101a;
+color:white;
 }
 
 .container{
-    max-width:1000px;
-    margin:auto;
-    padding:20px;
+max-width:1100px;
+margin:auto;
+padding:25px;
 }
 
 h1{
-    text-align:center;
-    color:#00d9ff;
+text-align:center;
+color:#00d9ff;
 }
+
 
 .card{
-    background:#162b3a;
-    padding:20px;
-    margin:20px 0;
-    border-radius:20px;
+
+background:#111d2b;
+border:1px solid #26384c;
+border-radius:15px;
+padding:20px;
+margin-bottom:20px;
+
 }
+
 
 .grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    gap:15px;
+
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:15px;
+
 }
+
+
+label{
+
+display:block;
+color:#b5c2d0;
+margin-bottom:10px;
+
+}
+
 
 input{
-    width:100%;
-    padding:10px;
-    margin-top:5px;
-    border-radius:8px;
-    border:0;
+
+width:100%;
+padding:12px;
+border-radius:8px;
+border:1px solid #34495e;
+background:#07111d;
+color:white;
+
 }
+
 
 button{
-    width:80%;
-    padding:20px;
-    margin-top:20px;
-    background:#00d9ff;
-    border:0;
-    border-radius:10px;
-    font-size:18px;
-    cursor:pointer;
+
+width:100%;
+padding:15px;
+margin-top:20px;
+background:#00d9ff;
+border:0;
+border-radius:10px;
+font-size:18px;
+font-weight:bold;
+cursor:pointer;
+
 }
 
-.result{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-    gap:15px;
+
+button:hover{
+
+opacity:.85;
+
 }
+
+
+
+.results{
+
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:15px;
+
+}
+
 
 .box{
-    background:#203b50;
-    padding:15px;
-    border-radius:10px;
-    text-align:center;
+
+background:#162b3a;
+padding:20px;
+border-radius:12px;
+text-align:center;
+
 }
+
+
+.box h3{
+
+color:#00d9ff;
+
+}
+
+
 </style>
+
 
 </head>
 
+
 <body>
+
 
 <div class="container">
 
+
 <h1>⚡ Solar ROI & NPV Analyzer</h1>
+
+
 
 <div class="card">
 
+
 <h2>System Input</h2>
+
 
 <div class="grid">
 
+
 <div>
-PV Size (kW)
+<label>PV Size (kW)</label>
 <input id="pv_kw" value="10">
 </div>
 
+
 <div>
-Peak Sun Hour
+<label>Peak Sun Hour</label>
 <input id="psh" value="4.5">
 </div>
 
+
 <div>
-Performance Ratio %
+<label>Performance Ratio (%)</label>
 <input id="pr" value="80">
 </div>
 
+
 <div>
-Monthly Load kWh
+<label>Monthly Load (kWh)</label>
 <input id="load" value="1000">
 </div>
 
+
 <div>
-Battery kWh
+<label>Battery (kWh)</label>
 <input id="battery" value="20">
 </div>
 
+
 <div>
-Battery DoD %
+<label>Battery DoD (%)</label>
 <input id="dod" value="90">
 </div>
 
+
 <div>
-Efficiency %
+<label>Efficiency (%)</label>
 <input id="efficiency" value="90">
 </div>
 
+
 <div>
-Tariff MMK/kWh
+<label>Tariff (MMK/kWh)</label>
 <input id="tariff" value="300">
 </div>
 
+
 <div>
-CAPEX MMK
+<label>CAPEX (MMK)</label>
 <input id="capex" value="15000000">
 </div>
 
+
 <div>
-O&M / Year
+<label>O&M / Year</label>
 <input id="om" value="100000">
 </div>
 
+
 <div>
-Project Life
+<label>Project Life (Year)</label>
 <input id="life" value="25">
 </div>
 
+
 </div>
+
 
 
 <button onclick="calculate()">
-RUN ENGINEERING ANALYSIS
+RUN SOLAR ANALYSIS
 </button>
 
+
 </div>
+
+
+
 
 
 <div class="card">
 
 <h2>Result</h2>
 
-<div class="result">
+
+<div class="results">
+
 
 <div class="box">
 PV Generation
 <h3 id="pv">-</h3>
 </div>
 
+
 <div class="box">
-Battery Backup
+Battery
 <h3 id="backup">-</h3>
 </div>
+
 
 <div class="box">
 Payback
 <h3 id="payback">-</h3>
 </div>
 
+
 <div class="box">
 ROI
 <h3 id="roi">-</h3>
 </div>
+
 
 <div class="box">
 NPV
 <h3 id="npv">-</h3>
 </div>
 
+
 </div>
+
+</div>
+
+
 
 </div>
 
 
-</div>
+
 
 
 <script>
 
-function calculate(){
 
-fetch("/calculate",
-{
+async function calculate(){
+
+
+let data={
+
+pv_kw:document.getElementById("pv_kw").value,
+
+psh:document.getElementById("psh").value,
+
+pr:document.getElementById("pr").value,
+
+load:document.getElementById("load").value,
+
+battery:document.getElementById("battery").value,
+
+dod:document.getElementById("dod").value,
+
+efficiency:document.getElementById("efficiency").value,
+
+tariff:document.getElementById("tariff").value,
+
+capex:document.getElementById("capex").value,
+
+om:document.getElementById("om").value,
+
+life:document.getElementById("life").value
+
+};
+
+
+
+let res=await fetch("/calculate",{
+
 method:"POST",
+
 headers:{
+
 "Content-Type":"application/json"
+
 },
 
-body:JSON.stringify({
-
-pv_kw:pv_kw.value,
-psh:psh.value,
-pr:pr.value,
-load:load.value,
-battery:battery.value,
-dod:dod.value,
-efficiency:efficiency.value,
-tariff:tariff.value,
-capex:capex.value,
-om:om.value,
-life:life.value,
-
-})
-
-})
-
-.then(res=>res.json())
-
-.then(data=>{
-
-pv.innerHTML=data.pv_generation+" kWh/year";
-
-backup.innerHTML =
-"Available: " + data.battery.usable_energy + " kWh<br>" +
-"Coverage: " + data.battery.monthly_coverage + " %";
-
-payback.innerHTML=data.finance.payback+" years";
-
-roi.innerHTML=data.finance.roi+" %";
-
-npv.innerHTML=data.finance.npv+" MMK";
+body:JSON.stringify(data)
 
 });
 
+
+
+let result=await res.json();
+
+
+
+if(result.error){
+
+alert(result.error);
+
+return;
+
 }
 
+
+
+document.getElementById("pv").innerHTML=
+result.pv_generation+" kWh/year";
+
+
+
+document.getElementById("backup").innerHTML=
+result.battery.usable_energy+
+" kWh<br>"+
+result.battery.coverage+
+" %";
+
+
+
+document.getElementById("payback").innerHTML=
+result.finance.payback+" years";
+
+
+
+document.getElementById("roi").innerHTML=
+result.finance.roi+" %";
+
+
+
+document.getElementById("npv").innerHTML=
+result.finance.npv+" MMK";
+
+
+
+}
+
+
 </script>
+
 
 
 </body>
