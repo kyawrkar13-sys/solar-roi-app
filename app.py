@@ -1,7 +1,6 @@
-:import os
-from flask import Flask, render_template, request, jsonify
+[13/07/2026 22:51] Rkar Kyaw: from flask import Flask, render_template, request, jsonify
 
-app = Flask(__name__)
+app = Flask(name)
 
 
 # =========================
@@ -138,7 +137,7 @@ def finance(
         # 3% yearly energy price escalation
         annual_saving = (
             total_annual_saving *
-            (1.03 ** (y - 1))
+            (1.03  (y - 1))
         )
 
         net = (
@@ -152,7 +151,7 @@ def finance(
 
         npv += (
             net /
-            ((1 + discount) ** y)
+            ((1 + discount)  y)
         )
 
 
@@ -251,11 +250,7 @@ def calculate():
         pv_kw = float(
             d["pv_kw"]
         )
-
-        psh = float(
-            d["psh"]
-        )
-[13/07/2026 18:46] Rkar Kyaw: pr = (
+[13/07/2026 22:52] Rkar Kyaw: pr = (
             float(d["pr"]) /
             100
         )
@@ -418,7 +413,7 @@ def calculate():
 # RUN SERVER
 # =========================
 
-if name == "__main__":
+if name == "main":
 
     app.run(
 
