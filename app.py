@@ -8,43 +8,40 @@ HTML = """
 <html>
 <head>
 <title>Generator Fuel Saving Calculator</title>
-
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
 body{
-    font-family:Arial;
-    background:#f2f2f2;
-    padding:20px;
+font-family:Arial;
+background:#f2f2f2;
+padding:20px;
 }
 
 .box{
-    max-width:500px;
-    margin:auto;
-    background:white;
-    padding:20px;
-    border-radius:15px;
+max-width:500px;
+margin:auto;
+background:white;
+padding:20px;
+border-radius:15px;
 }
 
 input,button{
-    width:100%;
-    padding:12px;
-    margin-top:10px;
-    font-size:16px;
+width:100%;
+padding:12px;
+margin-top:10px;
 }
 
 button{
-    background:green;
-    color:white;
-    border:0;
-    border-radius:8px;
+background:green;
+color:white;
+border:0;
+border-radius:8px;
 }
 
 .result{
-    margin-top:20px;
-    background:#e8ffe8;
-    padding:15px;
-    border-radius:10px;
+margin-top:20px;
+background:#e8ffe8;
+padding:15px;
 }
 </style>
 
@@ -58,26 +55,26 @@ button{
 
 <form method="post">
 
-<label>Generator Fuel (L/hour)</label>
-<input name="fuel" value="40" type="number" step="0.01">
+Fuel L/hour:
+<input name="fuel" value="40">
 
-<label>Running Hours / Day</label>
-<input name="hours" value="10" type="number" step="0.01">
+Hours/day:
+<input name="hours" value="10">
 
-<label>Diesel Price ($/L)</label>
-<input name="price" value="1.2" type="number" step="0.01">
+Diesel $/L:
+<input name="price" value="1.2">
 
-<label>Solar Offset (%)</label>
-<input name="offset" value="50" type="number" step="0.01">
+Solar Offset %:
+<input name="offset" value="50">
 
-<label>Solar System Cost ($)</label>
-<input name="cost" value="80000" type="number" step="0.01">
+System Cost $:
+<input name="cost" value="80000">
 
-<button type="submit">Calculate</button>
+<button>Calculate</button>
 
 </form>
 
-{%RESULT%}
+{{result}}
 
 </div>
 
@@ -102,34 +99,30 @@ def home():
 
         fuel_day = fuel * hours * offset / 100
 
-        money_day = fuel_day * price
+        saving_day = fuel_day * price
 
-        money_month = money_day * 30
+        saving_month = saving_day * 30
 
-        money_year = money_month * 12
+        saving_year = saving_month * 12
 
-        payback = cost / money_year
+        payback = cost / saving_year
 
-        roi = money_year / cost * 100
+        roi = saving_year / cost * 100
 
 
         result = f"""
         <div class='result'>
-        <b>Fuel Saving:</b> {fuel_day:.2f} L/day<br><br>
-
-        <b>Daily Saving:</b> ${money_day:.2f}<br>
-        <b>Monthly Saving:</b> ${money_month:.2f}<br>
-        <b>Yearly Saving:</b> ${money_year:.2f}<br><br>
-
-        <b>Payback:</b> {payback:.2f} Years<br>
-        <b>ROI:</b> {roi:.2f} %
-
+        Fuel Saving: {fuel_day:.2f} L/day<br><br>
+        Daily Saving: ${saving_day:.2f}<br>
+        Monthly Saving: ${saving_month:.2f}<br>
+        Yearly Saving: ${saving_year:.2f}<br><br>
+        Payback: {payback:.2f} Years<br>
+        ROI: {roi:.2f}%
         </div>
         """
 
 
-    return HTML.replace("{%RESULT%}", result)
-
+    return HTML.replace("{{result}}", result)
 
 
 if name == "__main__":
