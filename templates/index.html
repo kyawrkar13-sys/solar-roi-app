@@ -1,107 +1,74 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link rel="icon" type="image/png" href="/static/icon.png">
-<link rel="apple-touch-icon" href="/static/icon.png">
-
-<title>Solar ROI Analyzer</title>
+<title>Solar ROI & NPV Analyzer</title>
 
 <style>
-*{box-sizing:border-box}
+*{
+    box-sizing:border-box;
+}
 
 body{
-margin:0;
-font-family:Arial,"Noto Sans Myanmar",sans-serif;
-background:#08101a;
-color:white;
+    font-family: Arial, sans-serif;
+    margin:0;
+    padding:20px;
+    background:#f4f6f8;
 }
 
 .container{
-max-width:1100px;
-margin:auto;
-padding:25px;
+    max-width:500px;
+    margin:auto;
+    background:white;
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 4px 15px rgba(0,0,0,0.1);
 }
 
 h1{
-text-align:center;
-color:#00d9ff;
-}
-
-.card{
-background:#111d2b;
-border:1px solid #26384c;
-border-radius:15px;
-padding:20px;
-margin-bottom:20px;
-}
-
-.grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-gap:15px;
+    text-align:center;
+    font-size:24px;
 }
 
 label{
-display:block;
-color:#b5c2d0;
-margin-bottom:10px;
+    display:block;
+    margin-top:15px;
+    font-weight:bold;
 }
 
 input{
-width:100%;
-padding:12px;
-border-radius:8px;
-border:1px solid #34495e;
-background:#07111d;
-color:white;
-font-size:16px;
+    width:100%;
+    padding:12px;
+    margin-top:5px;
+    border:1px solid #ccc;
+    border-radius:8px;
+    font-size:16px;
 }
 
 button{
-width:100%;
-padding:15px;
-margin-top:20px;
-background:#00d9ff;
-border:0;
-border-radius:10px;
-font-size:18px;
-font-weight:bold;
-cursor:pointer;
+    width:100%;
+    margin-top:20px;
+    padding:14px;
+    border:none;
+    border-radius:8px;
+    background:#007bff;
+    color:white;
+    font-size:18px;
+    cursor:pointer;
 }
 
-.results{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-gap:15px;
+button:hover{
+    background:#0056b3;
 }
 
-.box{
-background:#162b3a;
-padding:20px;
-border-radius:12px;
-text-align:center;
-}
-
-.box h3{
-color:#00d9ff;
-}
-
-.generator{
-border:1px solid #f5a623;
-}
-
-.generator h2{
-color:#f5a623;
-}
-
-@media(max-width:600px){
-.container{padding:12px}
-.grid{grid-template-columns:1fr}
-.results{grid-template-columns:1fr 1fr}
+.result{
+    margin-top:20px;
+    padding:15px;
+    background:#eef7ff;
+    border-radius:8px;
+    font-size:17px;
 }
 </style>
 
@@ -111,171 +78,24 @@ color:#f5a623;
 
 <div class="container">
 
-<h1>⚡ Solar ROI & NPV Analyzer</h1>
+<h1>Solar ROI & NPV Analyzer</h1>
 
+<label>Solar System Size (kW)</label>
+<input id="kw" type="number" value="10">
 
-<div class="card">
+<label>Installation Cost ($)</label>
+<input id="cost" type="number" value="10000">
 
-<h2>☀️ System Input</h2>
+<label>Monthly Saving ($)</label>
+<input id="saving" type="number" value="150">
 
-<div class="grid">
+<label>Project Life (Years)</label>
+<input id="years" type="number" value="25">
 
-<div>
-<label>PV Size (kW)</label>
-<input id="pv_kw" value="10">
-</div>
+<button onclick="calculate()">Calculate</button>
 
-<div>
-<label>Peak Sun Hour</label>
-<input id="psh" value="4.5">
-</div>
-
-<div>
-<label>Performance Ratio (%)</label>
-<input id="pr" value="80">
-</div>
-
-<div>
-<label>Monthly Load (kWh)</label>
-<input id="load" value="1000">
-</div>
-
-<div>
-<label>Battery (kWh)</label>
-<input id="battery" value="20">
-</div>
-
-<div>
-<label>Battery DoD (%)</label>
-<input id="dod" value="90">
-</div>
-
-<div>
-<label>Efficiency (%)</label>
-<input id="efficiency" value="90">
-</div>
-
-<div>
-<label>Tariff (MMK/kWh)</label>
-<input id="tariff" value="300">
-</div>
-
-<div>
-<label>CAPEX (MMK)</label>
-<input id="capex" value="15000000">
-</div>
-
-<div>
-<label>O&M / Year</label>
-<input id="om" value="100000">
-</div>
-
-<div>
-<label>Project Life (Year)</label>
-<input id="life" value="25">
-</div>
-
-</div>
-</div>
-
-
-<div class="card generator">
-
-<h2>⛽ Generator Fuel Saving</h2>
-
-<div class="grid">
-
-<div>
-<label>Fuel Consumption (Liter / Hour)</label>
-<input id="fuel_consumption" value="5">
-</div>
-
-<div>
-<label>Diesel Price (MMK / Liter)</label>
-<input id="diesel_price" value="3000">
-</div>
-
-<div>
-<label>Generator Running Hours (Hour / Day)</label>
-<input id="generator_hours" value="8">
-</div>
-
-<div>
-<label>Solar Reduced Generator Hours (Hour / Day)</label>
-<input id="generator_hours_saved" value="4">
-</div>
-
-</div>
-
-<button onclick="calculate()">
-RUN SOLAR & GENERATOR ANALYSIS
-</button>
-
-</div>
-
-
-<div class="card">
-
-<h2>📊 Result</h2>
-
-<div class="results">
-
-<div class="box">
-PV Generation
-<h3 id="pv">-</h3>
-</div>
-
-<div class="box">
-Battery
-<h3 id="backup">-</h3>
-</div>
-
-<div class="box">
-Payback
-<h3 id="payback">-</h3>
-</div>
-
-<div class="box">
-ROI
-<h3 id="roi">-</h3>
-</div>
-
-<div class="box">
-NPV
-<h3 id="npv">-</h3>
-</div>
-
-</div>
-</div>
-
-
-<div class="card generator">
-
-<h2>⛽ Generator Saving Result</h2>
-
-<div class="results">
-
-<div class="box">
-Fuel Saved / Day
-<h3 id="fuel_day">-</h3>
-</div>
-
-<div class="box">
-Fuel Saved / Year
-<h3 id="fuel_year">-</h3>
-</div>
-
-<div class="box">
-Money Saved / Month
-<h3 id="money_month">-</h3>
-</div>
-
-<div class="box">
-Money Saved / Year
-<h3 id="money_year">-</h3>
-</div>
-
-</div>
+<div class="result" id="result">
+Result will show here
 </div>
 
 </div>
@@ -283,107 +103,22 @@ Money Saved / Year
 
 <script>
 
-function fmt(n){
-return Number(n).toLocaleString("en-US",{
-maximumFractionDigits:2
-});
-}
+function calculate(){
 
+let cost = Number(document.getElementById("cost").value);
+let saving = Number(document.getElementById("saving").value);
+let years = Number(document.getElementById("years").value);
 
-async function calculate(){
+let annual = saving * 12;
+let total = annual * years;
 
-let data={
+let roi = ((total - cost) / cost) * 100;
 
-pv_kw:document.getElementById("pv_kw").value,
-psh:document.getElementById("psh").value,
-pr:document.getElementById("pr").value,
-load:document.
-[13/07/2026 18:48] Rkar Kyaw: getElementById("load").value,
-battery:document.getElementById("battery").value,
-dod:document.getElementById("dod").value,
-efficiency:document.getElementById("efficiency").value,
-tariff:document.getElementById("tariff").value,
-capex:document.getElementById("capex").value,
-om:document.getElementById("om").value,
-life:document.getElementById("life").value,
-
-fuel_consumption:document.getElementById("fuel_consumption").value,
-diesel_price:document.getElementById("diesel_price").value,
-generator_hours:document.getElementById("generator_hours").value,
-generator_hours_saved:document.getElementById("generator_hours_saved").value
-
-};
-
-
-let res=await fetch("/calculate",{
-
-method:"POST",
-
-headers:{
-"Content-Type":"application/json"
-},
-
-body:JSON.stringify(data)
-
-});
-
-
-let result=await res.json();
-
-
-if(result.error){
-
-alert(result.error);
-
-return;
-
-}
-
-
-document.getElementById("pv").innerHTML=
-fmt(result.pv_generation)+" kWh/year";
-
-
-document.getElementById("backup").innerHTML=
-fmt(result.battery.usable_energy)+
-" kWh<br>"+
-fmt(result.battery.coverage)+
-" %";
-
-
-document.getElementById("payback").innerHTML=
-result.finance.payback+
-" years";
-
-
-document.getElementById("roi").innerHTML=
-fmt(result.finance.roi)+
-" %";
-
-
-document.getElementById("npv").innerHTML=
-fmt(result.finance.npv)+
-" MMK";
-
-
-document.getElementById("fuel_day").innerHTML=
-fmt(result.generator.fuel_saved_day)+
-" L";
-
-
-document.getElementById("fuel_year").innerHTML=
-fmt(result.generator.fuel_saved_year)+
-" L";
-
-
-document.getElementById("money_month").innerHTML=
-fmt(result.generator.money_saved_month)+
-" MMK";
-
-
-document.getElementById("money_year").innerHTML=
-fmt(result.generator.money_saved_year)+
-" MMK";
+document.getElementById("result").innerHTML =
+`
+<b>Total Saving:</b> $${total.toFixed(2)} <br>
+<b>ROI:</b> ${roi.toFixed(2)} %
+`;
 
 }
 
