@@ -1,290 +1,215 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solar ROI & NPV Analyzer</title>
 
-    <title>Solar ROI & NPV Analyzer</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+<style>
 
-        body {
-            margin: 0;
-            padding: 20px;
-            font-family: Arial, sans-serif;
-            background: #0f172a;
-            color: white;
-        }
+body{
+    font-family: Arial;
+    background:#f2f2f2;
+    padding:15px;
+}
 
-        .container {
-            max-width: 700px;
-            margin: auto;
-        }
+.box{
+    max-width:600px;
+    margin:auto;
+    background:white;
+    padding:20px;
+    border-radius:15px;
+    box-shadow:0 2px 10px #ccc;
+}
 
-        .card {
-            background: #1e293b;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 14px;
-        }
+h2{
+    text-align:center;
+}
 
-        h1 {
-            text-align: center;
-        }
+input,button{
+    width:100%;
+    padding:12px;
+    margin-top:8px;
+    box-sizing:border-box;
+}
 
-        h2 {
-            color: #38bdf8;
-        }
+button{
+    background:#008000;
+    color:white;
+    border:none;
+    border-radius:8px;
+    font-weight:bold;
+}
 
-        label {
-            display: block;
-            margin-top: 12px;
-            margin-bottom: 5px;
-        }
+.section{
+    margin-top:20px;
+    padding:10px;
+    background:#eeeeee;
+    border-radius:8px;
+}
 
-        input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #475569;
-            border-radius: 8px;
-            background: #0f172a;
-            color: white;
-            font-size: 16px;
-        }
+.result{
+    margin-top:20px;
+    background:#e8ffe8;
+    padding:15px;
+    border-radius:10px;
+}
 
-        button {
-            width: 100%;
-            padding: 15px;
-            margin-top: 20px;
-            border: none;
-            border-radius: 10px;
-            background: #22c55e;
-            color: white;
-            font-size: 17px;
-            font-weight: bold;
-            cursor: pointer;
-        }
+table{
+    width:100%;
+    border-collapse:collapse;
+}
 
-        .result {
-            padding: 12px;
-            margin: 8px 0;
-            background: #0f172a;
-            border-radius: 8px;
-        }
+td,th{
+    border:1px solid #aaa;
+    padding:6px;
+}
 
-        .value {
-            float: right;
-            color: #22c55e;
-            font-weight: bold;
-        }
+</style>
 
-        #error {
-            color: #f87171;
-            margin-top: 15px;
-        }
-    </style>
 </head>
 
 <body>
 
-<div class="container">
+<div class="box">
 
-    <h1>⚡ Solar ROI & NPV Analyzer</h1>
-
-    <div class="card">
-        <h2>Solar System Input</h2>
-
-        <label>PV Size (kW)</label>
-        <input id="pv_kw" type="number" value="10" step="any">
-
-        <label>Peak Sun Hour</label>
-        <input id="psh" type="number" value="4.5" step="any">
-
-        <label>Performance Ratio (%)</label>
-        <input id="pr" type="number" value="80" step="any">
-
-        <label>Monthly Load (kWh)</label>
-        <input id="load" type="number" value="1000" step="any">
-
-        <label>Battery (kWh)</label>
-        <input id="battery" type="number" value="20" step="any">
-
-        <label>Battery DoD (%)</label>
-        <input id="dod" type="number" value="90" step="any">
-
-        <label>Efficiency (%)</label>
-        <input id="efficiency" type="number" value="90" step="any">
-
-        <label>Tariff (MMK/kWh)</label>
-        <input id="tariff" type="number" value="300" step="any">
-    </div>
+<h2>☀️ Solar ROI & NPV Analyzer</h2>
 
 
-    <div class="card">
-        <h2>Generator Input</h2>
-
-        <label>Generator Fuel Consumption (L/hour)</label>
-        <input id="fuel_per_hour" type="number" value="40" step="any">
-
-        <label>Generator Running Hours / Day</label>
-        <input id="running_hours" type="number" value="10" step="any">
-
-        <label>Diesel Price (MMK/L)</label>
-        <input id="diesel_price" type="number" value="3000" step="any">
-
-        <label>Solar Offset of Generator (%)</label>
-        <input id="solar_offset" type="number" value="50" step="any">
-    </div>
+<form method="post">
 
 
-    <div class="card">
-        <h2>Financial Input</h2>
+<div class="section">
+<h3>Solar System</h3>
 
-        <label>CAPEX (MMK)</label>
-        <input id="capex" type="number" value="15000000" step="any">
+PV Size kW:
+<input name="pv_kw" value="100">
 
-        <label>O&M / Year (MMK)</label>
-        <input id="om" type="number" value="100000" step="any">
+Peak Sun Hour:
+<input name="psh" value="4.5">
 
-        <label>Project Life (Years)</label>
-        <input id="life" type="number" value="25">
+Performance Ratio %:
+<input name="pr" value="80">
 
-        <label>Discount Rate (%)</label>
-        <input id="discount" type="number" value="8" step="any">
-
-        <button onclick="calculate()">
-            RUN ENGINEERING ANALYSIS
-        </button>
-
-        <div id="error"></div>
-    </div>
-
-
-    <div class="card">
-        <h2>Result</h2>
-
-        <div class="result">
-            PV Generation
-[13/07/2026 23:14] Rkar Kyaw: <span class="value" id="pv_result">-</span>
-        </div>
-
-        <div class="result">
-            Battery Usable Energy
-            <span class="value" id="battery_result">-</span>
-        </div>
-
-        <div class="result">
-            Generator Fuel Saving
-            <span class="value" id="fuel_result">-</span>
-        </div>
-
-        <div class="result">
-            Generator Annual Saving
-            <span class="value" id="generator_saving">-</span>
-        </div>
-
-        <div class="result">
-            Total Annual Saving
-            <span class="value" id="total_saving">-</span>
-        </div>
-
-        <div class="result">
-            Payback
-            <span class="value" id="payback_result">-</span>
-        </div>
-
-        <div class="result">
-            ROI
-            <span class="value" id="roi_result">-</span>
-        </div>
-
-        <div class="result">
-            NPV
-            <span class="value" id="npv_result">-</span>
-        </div>
-    </div>
+Yearly Degradation %:
+<input name="degradation" value="0.5">
 
 </div>
 
 
-<script>
-async function calculate() {
 
-    const data = {
-        pv_kw: document.getElementById("pv_kw").value,
-        psh: document.getElementById("psh").value,
-        pr: document.getElementById("pr").value,
-        load: document.getElementById("load").value,
-        battery: document.getElementById("battery").value,
-        dod: document.getElementById("dod").value,
-        efficiency: document.getElementById("efficiency").value,
-        tariff: document.getElementById("tariff").value,
+<div class="section">
 
-        fuel_per_hour: document.getElementById("fuel_per_hour").value,
-        running_hours: document.getElementById("running_hours").value,
-        diesel_price: document.getElementById("diesel_price").value,
-        solar_offset: document.getElementById("solar_offset").value,
+<h3>Generator</h3>
 
-        capex: document.getElementById("capex").value,
-        om: document.getElementById("om").value,
-        life: document.getElementById("life").value,
-        discount: document.getElementById("discount").value
-    };
+Fuel Consumption L/hour:
+<input name="fuel" value="25">
 
-    document.getElementById("error").textContent = "";
+Running Hours/day:
+<input name="hours" value="10">
 
-    try {
+Diesel Price $/L:
+<input name="diesel" value="1.2">
 
-        const response = await fetch("/calculate", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(data)
-        });
+Solar Offset %:
+<input name="offset" value="50">
 
-        const result = await response.json();
+</div>
 
-        if (!response.ok) {
-            throw new Error(result.error || "Calculation failed");
-        }
 
-        document.getElementById("pv_result").textContent =
-            result.pv_generation.toLocaleString() + " kWh/year";
 
-        document.getElementById("battery_result").textContent =
-            result.battery.usable_energy.toLocaleString() + " kWh";
+<div class="section">
 
-        document.getElementById("fuel_result").textContent =
-            result.generator.fuel_saved_day.toLocaleString() + " L/day";
+<h3>EPC Cost & Finance</h3>
 
-        document.getElementById("generator_saving").textContent =
-            result.generator.saving_year.toLocaleString() + " MMK/year";
+CAPEX / EPC Cost $:
+<input name="capex" value="80000">
 
-        document.getElementById("total_saving").textContent =
-            result.total_annual_saving.toLocaleString() + " MMK/year";
+O&M % / Year:
+<input name="om" value="1">
 
-        document.getElementById("payback_result").textContent =
-            result.finance.payback === null
-            ? "Not reached"
-            : result.finance.payback + " years";
+Project Lifetime (Year):
+<input name="lifetime" value="10">
 
-        document.getElementById("roi_result").textContent =
-            result.finance.roi.toLocaleString() + " %";
+Discount Rate %:
+<input name="discount" value="8">
 
-        document.getElementById("npv_result").textContent =
-            result.finance.npv.toLocaleString() + " MMK";
+</div>
 
-    } catch (error) {
 
-        document.getElementById("error").textContent =
-            "Error: " + error.message;
-    }
-}
-</script>
+
+<button type="submit">
+Calculate
+</button>
+
+
+</form>
+
+
+
+{% if result %}
+
+<div class="result">
+
+<h3>Result</h3>
+
+Solar Generation:
+{{result.solar}} kWh/year
+<br><br>
+
+Fuel Saving:
+{{result.fuel}} L/year
+<br><br>
+
+Money Saving:
+${{result.saving}} / year
+
+<hr>
+
+Payback:
+{{result.finance.payback}} Year
+
+<br>
+
+ROI:
+{{result.finance.roi}} %
+
+<br>
+
+NPV:
+${{result.finance.npv}}
+
+<hr>
+
+<h3>Cash Flow</h3>
+
+<table>
+
+<tr>
+<th>Year</th>
+<th>Cash</th>
+<th>Cumulative</th>
+</tr>
+
+{% for c in result.finance.cashflow %}
+
+<tr>
+<td>{{c.year}}</td>
+<td>${{c.cash}}</td>
+<td>${{c.total}}</td>
+</tr>
+
+{% endfor %}
+
+</table>
+
+
+</div>
+
+{% endif %}
+
+
+</div>
 
 </body>
 </html>
