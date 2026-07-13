@@ -1,17 +1,17 @@
-<!DOCTYPE html>
+[13/07/2026 18:48] Rkar Kyaw: <!DOCTYPE html>
 <html>
 <head>
-<link rel="icon" type="image/png" href="/static/icon.png">
-<link rel="apple-touch-icon" href="/static/icon.png">
-<title>Solar ROI Analyzer</title>
 
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<style>
+<link rel="icon" type="image/png" href="/static/icon.png">
+<link rel="apple-touch-icon" href="/static/icon.png">
 
-*{
-box-sizing:border-box;
-}
+<title>Solar ROI Analyzer</title>
+
+<style>
+*{box-sizing:border-box}
 
 body{
 margin:0;
@@ -31,50 +31,37 @@ text-align:center;
 color:#00d9ff;
 }
 
-
 .card{
-
 background:#111d2b;
 border:1px solid #26384c;
 border-radius:15px;
 padding:20px;
 margin-bottom:20px;
-
 }
 
-
 .grid{
-
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
 gap:15px;
-
 }
 
-
 label{
-
 display:block;
 color:#b5c2d0;
 margin-bottom:10px;
-
 }
 
-
 input{
-
 width:100%;
 padding:12px;
 border-radius:8px;
 border:1px solid #34495e;
 background:#07111d;
 color:white;
-
+font-size:16px;
 }
 
-
 button{
-
 width:100%;
 padding:15px;
 margin-top:20px;
@@ -84,232 +71,248 @@ border-radius:10px;
 font-size:18px;
 font-weight:bold;
 cursor:pointer;
-
 }
-
-
-button:hover{
-
-opacity:.85;
-
-}
-
-
 
 .results{
-
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
 gap:15px;
-
 }
 
-
 .box{
-
 background:#162b3a;
 padding:20px;
 border-radius:12px;
 text-align:center;
-
 }
-
 
 .box h3{
-
 color:#00d9ff;
-
 }
 
+.generator{
+border:1px solid #f5a623;
+}
 
+.generator h2{
+color:#f5a623;
+}
+
+@media(max-width:600px){
+.container{padding:12px}
+.grid{grid-template-columns:1fr}
+.results{grid-template-columns:1fr 1fr}
+}
 </style>
-
 
 </head>
 
-
 <body>
 
-
 <div class="container">
-
 
 <h1>⚡ Solar ROI & NPV Analyzer</h1>
 
 
-
 <div class="card">
 
-
-<h2>System Input</h2>
-
+<h2>☀️ System Input</h2>
 
 <div class="grid">
-
 
 <div>
 <label>PV Size (kW)</label>
 <input id="pv_kw" value="10">
 </div>
 
-
 <div>
 <label>Peak Sun Hour</label>
 <input id="psh" value="4.5">
 </div>
-
 
 <div>
 <label>Performance Ratio (%)</label>
 <input id="pr" value="80">
 </div>
 
-
 <div>
 <label>Monthly Load (kWh)</label>
 <input id="load" value="1000">
 </div>
-
 
 <div>
 <label>Battery (kWh)</label>
 <input id="battery" value="20">
 </div>
 
-
 <div>
 <label>Battery DoD (%)</label>
 <input id="dod" value="90">
 </div>
-
 
 <div>
 <label>Efficiency (%)</label>
 <input id="efficiency" value="90">
 </div>
 
-
 <div>
 <label>Tariff (MMK/kWh)</label>
 <input id="tariff" value="300">
 </div>
-
 
 <div>
 <label>CAPEX (MMK)</label>
 <input id="capex" value="15000000">
 </div>
 
-
 <div>
 <label>O&M / Year</label>
 <input id="om" value="100000">
 </div>
-
 
 <div>
 <label>Project Life (Year)</label>
 <input id="life" value="25">
 </div>
 
-
+</div>
 </div>
 
 
+<div class="card generator">
+
+<h2>⛽ Generator Fuel Saving</h2>
+
+<div class="grid">
+
+<div>
+<label>Fuel Consumption (Liter / Hour)</label>
+<input id="fuel_consumption" value="5">
+</div>
+
+<div>
+<label>Diesel Price (MMK / Liter)</label>
+<input id="diesel_price" value="3000">
+</div>
+
+<div>
+<label>Generator Running Hours (Hour / Day)</label>
+<input id="generator_hours" value="8">
+</div>
+
+<div>
+<label>Solar Reduced Generator Hours (Hour / Day)</label>
+<input id="generator_hours_saved" value="4">
+</div>
+
+</div>
 
 <button onclick="calculate()">
-RUN SOLAR ANALYSIS
+RUN SOLAR & GENERATOR ANALYSIS
 </button>
 
-
 </div>
-
-
-
 
 
 <div class="card">
 
-<h2>Result</h2>
-
+<h2>📊 Result</h2>
 
 <div class="results">
-
 
 <div class="box">
 PV Generation
 <h3 id="pv">-</h3>
 </div>
 
-
 <div class="box">
 Battery
 <h3 id="backup">-</h3>
 </div>
-
 
 <div class="box">
 Payback
 <h3 id="payback">-</h3>
 </div>
 
-
 <div class="box">
 ROI
 <h3 id="roi">-</h3>
 </div>
-
 
 <div class="box">
 NPV
 <h3 id="npv">-</h3>
 </div>
 
-
 </div>
-
-</div>
-
-
-
 </div>
 
 
+<div class="card generator">
 
+<h2>⛽ Generator Saving Result</h2>
+
+<div class="results">
+
+<div class="box">
+Fuel Saved / Day
+<h3 id="fuel_day">-</h3>
+</div>
+
+<div class="box">
+Fuel Saved / Year
+<h3 id="fuel_year">-</h3>
+</div>
+
+<div class="box">
+Money Saved / Month
+<h3 id="money_month">-</h3>
+</div>
+
+<div class="box">
+Money Saved / Year
+<h3 id="money_year">-</h3>
+</div>
+
+</div>
+</div>
+
+</div>
 
 
 <script>
 
+function fmt(n){
+return Number(n).toLocaleString("en-US",{
+maximumFractionDigits:2
+});
+}
+
 
 async function calculate(){
-
 
 let data={
 
 pv_kw:document.getElementById("pv_kw").value,
-
 psh:document.getElementById("psh").value,
-
 pr:document.getElementById("pr").value,
-
-load:document.getElementById("load").value,
-
+load:document.
+[13/07/2026 18:48] Rkar Kyaw: getElementById("load").value,
 battery:document.getElementById("battery").value,
-
 dod:document.getElementById("dod").value,
-
 efficiency:document.getElementById("efficiency").value,
-
 tariff:document.getElementById("tariff").value,
-
 capex:document.getElementById("capex").value,
-
 om:document.getElementById("om").value,
+life:document.getElementById("life").value,
 
-life:document.getElementById("life").value
+fuel_consumption:document.getElementById("fuel_consumption").value,
+diesel_price:document.getElementById("diesel_price").value,
+generator_hours:document.getElementById("generator_hours").value,
+generator_hours_saved:document.getElementById("generator_hours_saved").value
 
 };
-
 
 
 let res=await fetch("/calculate",{
@@ -317,9 +320,7 @@ let res=await fetch("/calculate",{
 method:"POST",
 
 headers:{
-
 "Content-Type":"application/json"
-
 },
 
 body:JSON.stringify(data)
@@ -327,9 +328,7 @@ body:JSON.stringify(data)
 });
 
 
-
 let result=await res.json();
-
 
 
 if(result.error){
@@ -341,41 +340,54 @@ return;
 }
 
 
-
 document.getElementById("pv").innerHTML=
-result.pv_generation+" kWh/year";
-
+fmt(result.pv_generation)+" kWh/year";
 
 
 document.getElementById("backup").innerHTML=
-result.battery.usable_energy+
+fmt(result.battery.usable_energy)+
 " kWh<br>"+
-result.battery.coverage+
+fmt(result.battery.coverage)+
 " %";
 
 
-
 document.getElementById("payback").innerHTML=
-result.finance.payback+" years";
-
+result.finance.payback+
+" years";
 
 
 document.getElementById("roi").innerHTML=
-result.finance.roi+" %";
-
+fmt(result.finance.roi)+
+" %";
 
 
 document.getElementById("npv").innerHTML=
-result.finance.npv+" MMK";
+fmt(result.finance.npv)+
+" MMK";
 
 
+document.getElementById("fuel_day").innerHTML=
+fmt(result.generator.fuel_saved_day)+
+" L";
+
+
+document.getElementById("fuel_year").innerHTML=
+fmt(result.generator.fuel_saved_year)+
+" L";
+
+
+document.getElementById("money_month").innerHTML=
+fmt(result.generator.money_saved_month)+
+" MMK";
+
+
+document.getElementById("money_year").innerHTML=
+fmt(result.generator.money_saved_year)+
+" MMK";
 
 }
 
-
 </script>
-
-
 
 </body>
 </html>
