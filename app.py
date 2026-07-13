@@ -124,7 +124,7 @@ def calculate():
         }), 400
 
 
-if name == "__main__":
+if__ name__ == "__main__":
     app.run(
         host="0.0.0.0",
         port=int(os.environ.get("PORT", 5000))
