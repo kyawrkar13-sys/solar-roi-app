@@ -81,5 +81,6 @@ def home():
 
     return render_template_string(HTML_TEMPLATE)
 
-if name == "__main__":
+if__
+name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
