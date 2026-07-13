@@ -8,17 +8,17 @@ def solar_generation(pv_kw, psh, pr):
     return pv_kw * psh * 365 * pr
 
 
-def battery_calculation(capacity, dod, efficiency, monthly_load):
+def battery_calculation(capacity, dod, efficiency, load):
     usable = capacity * dod * efficiency
-    coverage = (usable / monthly_load) * 100 if monthly_load > 0 else 0
+    coverage = (usable / load) * 100 if load else 0
 
     return {
         "usable_energy": round(usable, 2),
-        "monthly_coverage": round(coverage, 2)
+        "coverage": round(coverage, 2)
     }
 
 
-def financial_model(capex, annual_saving, om, life):
+def finance(capex, saving, om, life):
 
     cashflow = []
     cumulative = -capex
@@ -28,37 +28,38 @@ def financial_model(capex, annual_saving, om, life):
 
     discount = 0.08
 
-    for year in range(1, life + 1):
+    for y in range(1, life + 1):
 
-        net = annual_saving * (1.03 ** (year - 1)) - om
+        net = saving * (1.03 ** (y-1)) - om
 
         cumulative += net
-        npv += net / ((1 + discount) ** year)
+        npv += net / ((1 + discount) ** y)
+
         total += net
 
         if payback is None and cumulative >= 0:
-            payback = year
+            payback = y
 
         cashflow.append({
-            "year": year,
-            "cash": round(net, 2),
-            "cumulative": round(cumulative, 2)
+            "year": y,
+            "cumulative": round(cumulative,2)
         })
 
 
-    roi = ((total - capex) / capex) * 100 if capex else 0
+    roi = ((total-capex)/capex)*100 if capex else 0
+
 
     return {
         "payback": payback,
-        "roi": round(roi, 2),
-        "npv": round(npv, 2),
+        "roi": round(roi,2),
+        "npv": round(npv,2),
         "cashflow": cashflow
     }
 
 
 
 @app.route("/")
-def index():
+def home():
     return render_template("index.html")
 
 
@@ -67,13 +68,16 @@ def index():
 def calculate():
 
     try:
-        d = request.get_json()
 
-        pv_kw = float(d.get("pv_kw", 0))
-        psh = float(d.get("psh", 0))
-        pr = float(d.get("pr", 0)) / 100
+        d = request.json
 
-        pv_year = solar_generation(
+
+        pv_kw = float(d["pv_kw"])
+        psh = float(d["psh"])
+        pr = float(d["pr"])/100
+
+
+        pv = solar_generation(
             pv_kw,
             psh,
             pr
@@ -81,40 +85,46 @@ def calculate():
 
 
         battery = battery_calculation(
-            float(d.get("battery", 0)),
-            float(d.get("dod", 0)) / 100,
-            float(d.get("efficiency", 0)) / 100,
-            float(d.get("load", 0))
+            float(d["battery"]),
+            float(d["dod"])/100,
+            float(d["efficiency"])/100,
+            float(d["load"])
         )
 
 
-        annual_saving = pv_year * float(d.get("tariff", 0))
+        saving = pv * float(d["tariff"])
 
 
-        finance = financial_model(
-            float(d.get("capex", 0)),
-            annual_saving,
-            float(d.get("om", 0)),
-            int(d.get("life", 1))
+        result = finance(
+            float(d["capex"]),
+            saving,
+            float(d["om"]),
+            int(d["life"])
         )
 
 
         return jsonify({
-            "pv_generation": round(pv_year, 2),
+
+            "pv_generation": round(pv,2),
+
             "battery": battery,
-            "finance": finance
+
+            "finance": result
+
         })
 
 
     except Exception as e:
+
         return jsonify({
-            "error": str(e)
-        }), 500
+            "error":str(e)
+        }),500
 
 
 
-if name == "__main__":
+if __name__=="__main__":
+
     app.run(
         host="0.0.0.0",
-        port=int(os.environ.get("PORT", 5000))
+        port=int(os.environ.get("PORT",5000))
     )
